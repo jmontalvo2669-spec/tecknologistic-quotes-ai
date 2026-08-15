@@ -51,8 +51,21 @@ class _CualquierEstadoActivo:
         return "(cualquier estado activo)"
 
 
+class _DestinoDinamico:
+    """Sentinel para el destino de la fila 24: docs/state_machine.md dice
+    literalmente "(cualquier estado anterior aplicable)" — el humano que
+    resuelve la excepción decide el destino real, nunca es un valor fijo de
+    tabla (regla general #4 de ese documento). Usar resolve_exception(),
+    nunca leer `.destino` de esta fila directamente ni pasarla a
+    find_transition()."""
+
+    def __repr__(self) -> str:
+        return "(cualquier estado anterior aplicable, decidido por el humano)"
+
+
 NINGUNO = _Ninguno()
 CUALQUIER_ESTADO_ACTIVO = _CualquierEstadoActivo()
+DESTINO_DINAMICO = _DestinoDinamico()
 
 ESTADOS_TERMINALES_O_ESTACIONAMIENTO = frozenset(
     {EstadoExpediente.CERRADA, EstadoExpediente.EXCEPCION}
@@ -67,7 +80,7 @@ aplica esta implementación."""
 class Transition:
     row: int
     origen: EstadoExpediente | _Ninguno | _CualquierEstadoActivo
-    destino: EstadoExpediente
+    destino: EstadoExpediente | _DestinoDinamico
     evento: str
     condition_tag: str
     condicion_texto: str
@@ -145,7 +158,7 @@ TRANSITIONS: tuple[Transition, ...] = (
     Transition(23, EstadoExpediente.COMPRA_PROVEEDOR_EMITIDA, EstadoExpediente.CERRADA, "CASE_CLOSED",
                "supplier_delivery_confirmed", "proveedor confirma entrega y no hay pendientes",
                "Humano / Odoo Connector (lectura de estado)"),
-    Transition(24, EstadoExpediente.EXCEPCION, EstadoExpediente.CERRADA, "EXCEPTION_RESOLVED",
+    Transition(24, EstadoExpediente.EXCEPCION, DESTINO_DINAMICO, "EXCEPTION_RESOLVED",
                "exception_resolved_by_human",
                "humano resuelve la excepción y determina el estado correcto de reingreso"
                " (destino real = el que el humano indique explícitamente, ver resolve_exception())",
@@ -155,11 +168,6 @@ TRANSITIONS: tuple[Transition, ...] = (
                "error técnico no recuperable, timeout de reintentos agotado, SLA vencido sin resolución",
                "Orquestador"),
 )
-"""Fila 24 usa CERRADA como destino de tabla porque Transition exige un
-EstadoExpediente concreto, pero el destino real es dinámico (el humano
-decide a qué estado vuelve el expediente) — ver resolve_exception(), que es
-la única función que debe usarse para esta fila, nunca apply_transition()
-directamente."""
 
 
 class TransitionRejected(Exception):
@@ -201,7 +209,13 @@ def find_transition(
             f"evento={evento!r}, condition_tag={condition_tag!r} "
             f"({len(candidatas)} candidatas)"
         )
-    return candidatas[0]
+    encontrada = candidatas[0]
+    if encontrada.destino is DESTINO_DINAMICO:
+        raise TransitionRejected(
+            f"La fila {encontrada.row} tiene destino dinámico (lo decide el humano) — "
+            "usa resolve_exception(destino), nunca find_transition() para esta fila."
+        )
+    return encontrada
 
 
 def resolve_exception(

@@ -45,6 +45,13 @@ def test_fila_25_no_aplica_desde_cerrada_ni_desde_excepcion():
             find_transition(estado, "EXCEPTION_CREATED", "unrecoverable_error_or_sla_breach")
 
 
+def test_fila_24_no_se_puede_obtener_via_find_transition():
+    """El destino de la fila 24 es dinámico (DESTINO_DINAMICO) — nunca debe
+    devolverse desde find_transition(), solo desde resolve_exception()."""
+    with pytest.raises(TransitionRejected):
+        find_transition(EstadoExpediente.EXCEPCION, "EXCEPTION_RESOLVED", "exception_resolved_by_human")
+
+
 def test_fila_24_resolucion_de_excepcion_destino_lo_decide_el_humano():
     t = resolve_exception(EstadoExpediente.LISTA_PARA_ASIGNAR)
     assert t.row == 24
