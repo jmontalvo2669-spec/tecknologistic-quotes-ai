@@ -71,6 +71,15 @@ Cada agente consume exactamente los campos listados en "Input" y produce exactam
 
 **Regla de contrato:** este agente nunca recibe ni produce datos de líneas o de cotizador — solo resuelve identidad de expediente.
 
+**Decisión (ver `docs/decisions/0002-case-resolver-siempre-verifica-con-claude.md`):**
+incluso cuando solo hay **un** candidato disponible (sin evidencia
+determinista de por medio — sin hilo ya vinculado, sin número de
+expediente mencionado explícitamente), el agente debe verificar con Claude
+antes de resolver, nunca asignar automático solo porque no hay otro
+candidato con quien confundirse. Con el volumen actual (~3 RFQ/día) el
+costo extra de esta verificación es mínimo, y Jorge prefiere esta capa de
+seguridad adicional sobre el ahorro de una llamada a Claude.
+
 ---
 
 ## 5. Balanceador

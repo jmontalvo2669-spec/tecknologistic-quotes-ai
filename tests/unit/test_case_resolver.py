@@ -49,7 +49,23 @@ def test_caso_6_numero_de_expediente_mencionado_en_el_cuerpo_es_determinista():
     assert result.discarded_candidates[0].case_id == "TQL-2026-000198"
 
 
-def test_unico_candidato_se_resuelve_sin_llamar_a_claude():
+def test_unico_candidato_tambien_pasa_por_claude():
+    """Decisión de Jorge (docs/agent_contracts.md §4): incluso con un único
+    candidato sin evidencia determinista, se verifica con Claude — nunca se
+    asigna automático solo porque no hay otro candidato con quien
+    confundirse."""
+
+    def handler(prompt_version, payload, model):
+        assert len(payload["candidatos"]) == 1
+        return {
+            "resolution": "TQL-2026-000201",
+            "confidence": 0.93,
+            "evidence": ["único candidato, contenido consistente con el resumen"],
+            "discarded_candidates": [],
+            "requires_human_review": False,
+        }
+
+    client = FakeClaudeClient(handler)
     result = resolve(
         subject="RE",
         body_text="cualquier cosa",
@@ -57,10 +73,24 @@ def test_unico_candidato_se_resuelve_sin_llamar_a_claude():
         date="2026-08-10",
         known_case_id_for_thread=None,
         candidates=[_candidate()],
+        client=client,
     )
 
     assert result.resolution == "TQL-2026-000201"
-    assert result.resolved_by == "deterministic_rule"
+    assert result.resolved_by == "claude"
+    assert len(client.calls) == 1
+
+
+def test_unico_candidato_sin_cliente_claude_lanza_error():
+    with pytest.raises(ValueError):
+        resolve(
+            subject="RE",
+            body_text="cualquier cosa",
+            from_="cliente@example.com",
+            date="2026-08-10",
+            known_case_id_for_thread=None,
+            candidates=[_candidate()],
+        )
 
 
 def test_ejemplo_del_prompt_bridas_resuelto_por_claude():

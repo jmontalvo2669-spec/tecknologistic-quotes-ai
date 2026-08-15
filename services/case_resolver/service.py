@@ -67,21 +67,14 @@ def resolve(
             "un caso de resolución de expediente (docs/agent_contracts.md §4)"
         )
 
-    if len(candidates) == 1:
-        [only] = candidates
-        return CaseResolved(
-            resolution=only.case_id,
-            confidence=0.90,
-            evidence=[f"único candidato disponible: {', '.join(only.señales) or 'sin señales adicionales'}"],
-            discarded_candidates=[],
-            requires_human_review=False,
-            resolved_by="deterministic_rule",
-        )
-
-    # Dos o más candidatos razonables sin evidencia determinista -> Claude decide,
-    # con la regla crítica de "no adivinar" ya embebida en el prompt.
+    # Uno o más candidatos sin evidencia determinista -> Claude siempre
+    # decide, incluso con un único candidato (decisión explícita de Jorge,
+    # ver docs/agent_contracts.md §4: con el volumen actual el costo extra
+    # es mínimo y se prefiere la capa de verificación adicional en vez de
+    # asignar automático solo porque no hay otro candidato con quien
+    # confundirse).
     if client is None:
-        raise ValueError("hay múltiples candidatos ambiguos: se requiere un ClaudeClient (fake en pruebas)")
+        raise ValueError("se requiere un ClaudeClient (fake en pruebas) para verificar cualquier candidato")
 
     raw = client.complete_json(
         prompt_version=PROMPT_VERSION,
