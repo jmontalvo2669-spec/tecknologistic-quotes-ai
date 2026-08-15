@@ -19,11 +19,9 @@ import uuid
 from dataclasses import dataclass
 
 from gmail.client import GmailClient
-from schemas.balancer import BalancerInput, CotizadorRoster, RosterFlags
-from schemas.classifier import ClassifierInput, ThreadContextMessage
-from schemas.classifier import EmailClassified
+from schemas.balancer import BalancerInput, CotizadorRoster, RfqAssigned, RosterFlags
+from schemas.classifier import ClassifierInput, EmailClassified
 from schemas.extractor import DocumentExtracted
-from schemas.balancer import RfqAssigned
 from schemas.traceability import TraceabilityResult
 from services.classifier.service import classify
 from services.extractor.service import extract
@@ -33,7 +31,7 @@ from services.shared.claude_client import ClaudeClient
 from services.shared.repositories import InMemoryExpedienteRepository, InMemoryIngestedMessageRepository
 from services.shared.settings import Settings, settings as default_settings
 from services.traceability.service import compute_completeness, p0_checks
-from services.workflow.state_machine import EstadoExpediente, TransitionRejected, find_transition
+from services.workflow.state_machine import EstadoExpediente, find_transition
 from services.workload_balancer.service import assign
 
 
