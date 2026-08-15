@@ -37,22 +37,41 @@ de cotización y para orden de compra a proveedor? Sin esto, la máquina de
 estados (transiciones 15 y 22 de `docs/state_machine.md`) no puede validar
 identidad del aprobador en código.
 
-## C. Gaps encontrados en FASE 0 — no vienen en la sección 42 original
+## C. Gaps de documentación — RESUELTOS
 
-Estos gaps existen porque el documento **"Tecknologistic — Arquitectura IA
-Cotizaciones — Uso interno — Versión 1.0"**, referenciado repetidamente en el
-prompt maestro v1.1 como "(igual que v1.0)", **no está presente en este
-repositorio**. No se inventó contenido para rellenar estos vacíos — se listan
-aquí como bloqueantes reales.
+Estos tres gaps existían porque el documento "Tecknologistic — Arquitectura
+IA Cotizaciones — Uso interno — Versión 1.0", referenciado repetidamente en
+el prompt maestro v1.1 como "(igual que v1.0)", no estaba presente en este
+repositorio. Jorge actualizó `docs/architecture.md` a la versión 1.2
+(autocontenida, sin referencias externas no resueltas) y `docs/test_strategy.md`
+con el detalle completo de cada caso — quedan cerrados:
+
+- ~~El documento v1.0 no estaba en el repo~~ → `docs/architecture.md` v1.2 es
+  ahora autocontenido: cada sección que decía "(igual que v1.0)" tiene su
+  contenido completo (estados, los 10 agentes, RACI, fixtures,
+  observabilidad, dashboard, IaC, manejo de errores, fase de producción,
+  DoD, modo de trabajo, prioridades).
+- ~~Stack tecnológico sin detalle concreto~~ → `docs/architecture.md` §4 lista
+  el stack completo (Python 3.12+/FastAPI/Pydantic/SQLAlchemy/PostgreSQL/
+  Alembic/pytest, Cloud Run/Cloud SQL/Pub/Sub/Secret Manager/Scheduler/
+  Storage/IAM/Logging, Gmail API, Claude API, Odoo External API, Docker).
+- ~~Los "20 casos de prueba" no existían en el repo~~ → `docs/architecture.md`
+  §23 los lista por nombre y `docs/test_strategy.md` los detalla uno por uno
+  (fixture, entrada, comportamiento esperado, agente responsable), más 2
+  casos adicionales de infraestructura.
+
+## D. Gaps que siguen pendientes — Jorge los responde directamente
+
+Estos no son gaps de documentación: son decisiones de negocio que no se
+inventan ni se asumen. Se mantienen aquí hasta que Jorge las responda
+(ver también la sección A de este documento, que cubre las mismas preguntas
+en su redacción original del prompt maestro).
 
 | # | Gap | Impacto | Acción requerida |
 |---|---|---|---|
-| 9 | El documento v1.0 completo no está en el repo. Todo lo marcado "(igual que v1.0)" en el prompt maestro (estados 8, agentes 9-19 comportamiento base, stack sección 4, RACI base sección 22, pruebas sección 24, fixtures 25, observabilidad 26, dashboard 27, IaC 28, errores 32, producción 33, DoD 34) solo tiene el detalle que el propio v1.1 agrega explícitamente. | Alto — no se puede construir `docs/test_strategy.md` con los "20 casos mínimos" porque su contenido nunca llegó a este repo. | **Jorge debe compartir el documento v1.0 completo**, o confirmar que se reconstruye desde cero. |
-| 10 | El stack tecnológico completo (sección 4) no tiene ningún detalle concreto salvo la nota de renovación del watch de Gmail. No hay versión de lenguaje/framework, ORM, cola de mensajes concreta más allá de "Pub/Sub", etc. | Medio — bloquea `docs/architecture.md` §Stack en detalle | Confirmar stack real o aceptar propuesta de referencia (ver `docs/architecture.md`, marcada como propuesta, no como decisión). |
-| 11 | Los "20 casos de prueba" de la sección 24 (requeridos para GATE 2) no existen en ningún archivo del repo. | Alto — GATE 2 no se puede alcanzar sin ellos | Compartir el documento v1.0 o co-diseñar los 20 casos desde cero con Jorge. |
-| 12 | El roster de cotizadores (sección 9.3) no tiene fuente confirmada: ¿Odoo RRHH, tabla propia, hoja de configuración? | Alto — bloquea implementación real del Balanceador | Ver pregunta A.2. |
-| 13 | Canal de escalamiento del agente SLA (sección 9.4) sin definir. | Medio — bloquea implementación real de SLA | Ver pregunta A.6. |
-| 14 | `docs/decisions/` (ADRs) está creado vacío — ninguna decisión no trivial se ha tomado aún porque no hay aprobación de negocio. | Bajo | Se irán agregando ADRs a medida que se resuelvan estas preguntas. |
+| 9 | El roster de cotizadores (sección 13 de `docs/architecture.md`) no tiene fuente confirmada: ¿Odoo RRHH, tabla propia, hoja de configuración? | Alto — bloquea implementación real del Balanceador | Ver pregunta A.2. |
+| 10 | Canal de escalamiento del agente SLA (sección 16 de `docs/architecture.md`) sin definir. | Medio — bloquea implementación real de SLA | Ver pregunta A.6. |
+| 11 | `docs/decisions/` (ADRs) está creado vacío — ninguna decisión no trivial se ha tomado aún porque no hay aprobación de negocio. | Bajo | Se irán agregando ADRs a medida que se resuelvan estas preguntas. |
 
 ---
 
