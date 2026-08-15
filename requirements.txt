@@ -1,0 +1,13 @@
+# FASE 0 / PASO 6 — dependencias mínimas para el flujo P0 con mocks/fixtures.
+# No incluye todavía: fastapi/uvicorn (capa HTTP), google-cloud-* real,
+# odoorpc/xmlrpc real, anthropic SDK real — se agregan cuando GATE 1 lo
+# permita y haya credenciales reales que conectar.
+
+pydantic>=2.0
+pydantic-settings>=2.0
+pandas>=2.0
+openpyxl>=3.1
+sqlalchemy>=2.0
+alembic>=1.13
+
+pytest>=8.0

@@ -1,0 +1,20 @@
+# Entorno local de desarrollo — solo PostgreSQL por ahora.
+# PASO 6 (FASE 0) no conecta la aplicación a esta base todavía: los
+# servicios usan repositorios en memoria para las pruebas con mocks/fixtures.
+# Este compose queda listo para cuando se conecte SQLAlchemy/Alembic contra
+# una base real, sin que eso implique tocar Gmail/Odoo reales (sigue dentro
+# de lo permitido antes de GATE 1).
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: tecknologistic
+      POSTGRES_PASSWORD: tecknologistic
+      POSTGRES_DB: tecknologistic_quotes
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
