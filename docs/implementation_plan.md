@@ -1,6 +1,6 @@
 # Plan de Implementación
 
-## 1. Modo de trabajo aplicado (sección 35 del prompt maestro)
+## 1. Modo de trabajo aplicado (sección 34 de `docs/architecture.md`)
 
 | Paso | Descripción | Estado |
 |---|---|---|
@@ -26,12 +26,12 @@
   `docs/architecture.md`, `docs/data_dictionary.md`,
   `docs/event_contracts.md`, `docs/security.md`, `docs/test_strategy.md`,
   `docs/implementation_plan.md` (este archivo), `docs/open_questions.md`.
-- Se creó `.env.example` con las variables de la sección 29, sin valores
-  ficticios.
+- Se creó `.env.example` con las variables de la sección 28 de
+  `docs/architecture.md`, sin valores ficticios.
 - **No se tocó ningún sistema real** (Gmail, Odoo, Claude API en volumen).
   No se escribió código de servicios todavía.
 
-## 3. Backlog técnico por prioridad (sección 36 del prompt maestro)
+## 3. Backlog técnico por prioridad (sección 35 de `docs/architecture.md`)
 
 **P0 — no perder correos, evitar duplicados, contar líneas, expediente
 único, resolución, balanceo, trazabilidad:**
@@ -64,9 +64,10 @@
 **P2 — SLA, dashboard, optimización:**
 11. `services/sla/` — canal de escalamiento **bloqueado**
     (`docs/open_questions.md` A.6).
-12. Dashboard de KPIs (sección 27) — sin detalle adicional disponible más
-    allá de "igual que v1.0"; se diseñará cuando haya datos reales de
-    volumen (`docs/open_questions.md` A.1).
+12. Dashboard de KPIs — vistas ya definidas en la sección 26 de
+    `docs/architecture.md` (bandeja general, por cotizador, gerencia); se
+    implementa cuando haya datos reales de volumen (`docs/open_questions.md`
+    A.1).
 
 **P3 — búsqueda de proveedores, normalización técnica, aranceles, borradores:**
 13. `services/technical_normalizer/` — wrapper de
@@ -95,7 +96,7 @@ construir DEV con mocks/fixtures libremente sin este gate").
 
 ## 5. GATE 1 — punto de control actual
 
-**Definición (sección 6 del prompt maestro):** al terminar FASE 0, detenerse
+**Definición (sección 6 de `docs/architecture.md`):** al terminar FASE 0, detenerse
 y presentar el plan y `docs/open_questions.md` antes de escribir código que
 dependa de credenciales reales. Se puede construir DEV con mocks/fixtures
 libremente sin este gate. Requiere aprobación explícita de Jorge: conectar
@@ -111,7 +112,8 @@ pidió explícitamente para esta sesión.
 ## 6. GATE 2 (futuro, no aplica todavía)
 
 Antes de pasar de TEST/sandbox a producción: los 20 casos de prueba de la
-sección 24 pasando (**bloqueado**, ver `docs/test_strategy.md`), el
+sección 23 de `docs/architecture.md` pasando (**bloqueado**, ver
+`docs/test_strategy.md`), el
 `completeness_score` sobre 50-100 expedientes históricos (**bloqueado**,
 set histórico no existe), y costo real de IA por expediente medido (no
 estimado).

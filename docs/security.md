@@ -1,19 +1,25 @@
 # Seguridad y Privacidad de Datos
 
-**Estado:** varias secciones marcadas `[PENDIENTE]` porque dependen del
-documento v1.0 (Secret Manager, IAM, separación DEV/TEST/PROD, service
-accounts, rotación de secretos) que no está en este repositorio, o de
-decisiones de negocio que Jorge aún no ha tomado. No se rellenan con
-supuestos.
+**Estado:** varias secciones marcadas `[PENDIENTE]` porque dependen de
+decisiones de negocio/infraestructura que Jorge aún no ha tomado (valores
+concretos de IAM, GCP y retención). No se rellenan con supuestos.
 
-## 1. Controles heredados de v1.0 (mencionados pero sin detalle disponible)
+## 1. Controles de seguridad de infraestructura (sección 20 de `docs/architecture.md`)
 
-`[PENDIENTE — falta v1.0]` Secret Manager, IAM, separación de entornos
-DEV/TEST/PROD, service accounts dedicadas por entorno, rotación de secretos.
-La sección 21 del prompt maestro confirma que estos controles existen en la
-arquitectura base, pero su especificación concreta no llegó a este repo.
+Requisitos ya definidos explícitamente: Secret Manager, variables de
+entorno, mínimo privilegio, IAM, separación DEV/TEST/PROD, autenticación
+Pub/Sub → Cloud Run, service accounts, auditoría, rotación de secretos,
+permisos mínimos en Odoo y en Gmail. Prohibido explícitamente: hardcodear
+credenciales, guardar API keys en Git, usar administrador general, enviar
+información a servicios no aprobados.
 
-## 2. Retención de datos (LOPDP Ecuador) — nuevo en v1.1
+`[PENDIENTE]` Lo que falta no es la lista de controles (ya está completa en
+`docs/architecture.md` §20), sino su **especificación concreta**: nombres
+reales de proyectos GCP por entorno, roles IAM específicos por service
+account, y cadencia de rotación de secretos. Eso depende de que exista un
+proyecto GCP real (ver `docs/open_questions.md` A.4).
+
+## 2. Retención de datos (LOPDP Ecuador)
 
 - **Pregunta bloqueante:** ¿cuánto tiempo se conservan correos, adjuntos y
   datos de cliente? Debe alinearse a la Ley Orgánica de Protección de Datos
@@ -25,7 +31,7 @@ arquitectura base, pero su especificación concreta no llegó a este repo.
 
 ## 3. Minimización de datos
 
-Regla obligatoria (sección 21): **no extraer ni almacenar más campos de
+Regla obligatoria (sección 20 de `docs/architecture.md`): **no extraer ni almacenar más campos de
 contacto/cliente que los estrictamente necesarios** para el workflow. Esto
 aplica directamente a los campos `[PENDIENTE]` de `docs/data_dictionary.md`
 §1 (`cliente`, `contacto`) — cuando se definan, deben limitarse a lo que el
@@ -40,7 +46,7 @@ equivalente al del buzón de Gmail** — nunca más permisivo. Esto aplica al
 campo `storage_path` del esquema de `attachments` en `EMAIL_INGESTED`
 (`docs/data_dictionary.md` §2.1).
 
-## 5. Reglas de arquitectura de seguridad no negociables (heredadas de la sección 3 del prompt maestro)
+## 5. Reglas de arquitectura de seguridad no negociables (heredadas de la sección 3 de `docs/architecture.md`)
 
 - Regla 19: no conectar credenciales ni permisos de escritura reales (Gmail,
   Odoo) sin aprobación explícita de Jorge — GATE 1.
@@ -49,7 +55,7 @@ campo `storage_path` del esquema de `attachments` en `EMAIL_INGESTED`
 
 ## 6. Fixtures y datos de prueba
 
-Regla de la sección 25 del prompt maestro: **datos anonimizados, nunca datos
+Regla de la sección 24 de `docs/architecture.md`: **datos anonimizados, nunca datos
 reales en Git.** Cualquier fixture usado para pruebas en `tests/` (a crear en
 fase de implementación) debe anonimizarse antes de commitear.
 
@@ -71,7 +77,8 @@ Ninguno de los puntos de esta sección impide completar FASE 0 (documentación
 reales:
 
 - [ ] Confirmar política de retención (LOPDP) y responsable de tratamiento.
-- [ ] Obtener o reconstruir el detalle de IAM/Secret Manager/rotación de
-      secretos del documento v1.0.
+- [ ] Definir valores concretos de IAM/Secret Manager/rotación de secretos
+      (roles, nombres de service accounts, cadencia) sobre el proyecto GCP
+      real, una vez exista (ver `docs/open_questions.md` A.4).
 - [ ] Confirmar separación de entornos (proyectos GCP distintos por
       DEV/TEST/PROD) — `[PENDIENTE]`.

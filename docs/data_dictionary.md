@@ -1,8 +1,8 @@
 # Diccionario de Datos
 
-**Fuente:** sección 7 del prompt maestro (modelo de expediente) +
+**Fuente:** sección 7 de `docs/architecture.md` (modelo de expediente) +
 `docs/agent_contracts.md` (esquemas de entrada/salida por agente).
-Ningún campo aquí fue inventado; donde el prompt maestro no da tipo/formato
+Ningún campo aquí fue inventado; donde `docs/architecture.md` no da tipo/formato
 concreto se marca `[PENDIENTE]`.
 
 ## 1. Expediente (TQL)
@@ -13,7 +13,7 @@ solo del `Subject` del correo.
 | Campo | Tipo | Notas |
 |---|---|---|
 | `case_id` | string (`TQL-AAAA-NNNNNN`) | PK lógica del expediente |
-| `cliente` | `[PENDIENTE — estructura de contacto/cliente sin definir]` | vínculo a datos de cliente, sujeto a minimización (sección 21) |
+| `cliente` | `[PENDIENTE — estructura de contacto/cliente sin definir]` | vínculo a datos de cliente, sujeto a minimización (sección 20 de `docs/architecture.md`) |
 | `contacto` | `[PENDIENTE]` | persona de contacto del cliente |
 | `mensajes` | array de referencias a mensajes Gmail | ver `gmail_message_id`/`gmail_thread_id` |
 | `gmail_message_id` | string | id de mensaje Gmail |
@@ -136,10 +136,14 @@ evento, agente/actor, timestamp, motivo, `correlation_id`.
 ```
 
 ### 2.10 Auditoría / KPI
-Consume todos los eventos de auditoría (append-only); produce agregaciones
-de dashboard, sin esquema JSON de evento propio (sección 27 del prompt
-maestro, sin detalle adicional disponible — `[PENDIENTE]` más allá de "no
-produce eventos de workflow").
+Consume todos los eventos de auditoría (append-only); no produce eventos de
+workflow, solo agregaciones de dashboard. No tiene esquema JSON de evento
+propio, pero sección 18 de `docs/architecture.md` (AGENTE 10) sí detalla qué
+registra (RFQs, líneas, asignaciones, tiempos, conversiones, backlog,
+errores, excepciones, reasignaciones, SLA, costo IA, versión de
+modelo/prompt, decisiones relevantes) y los KPIs mínimos esperados — ver
+también sección 26 de `docs/architecture.md` (DASHBOARD) para las tres
+vistas (bandeja general, por cotizador, gerencia).
 
 ## 3. Umbrales de confianza (todas ya cuantificadas en las fuentes)
 
