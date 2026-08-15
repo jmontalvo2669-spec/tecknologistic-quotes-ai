@@ -173,20 +173,24 @@ tests/fixtures/  # xlsx generados por scripts/generate_fixtures.py
   - El roster real de cotizadores contra Odoo 18 — `BalancerInput.roster`
     se recibe ya armado; falta el código que lo lea de Odoo RRHH cuando
     exista el sandbox (`docs/open_questions.md` A.2/A.3).
-- **Discrepancias encontradas durante la implementación, no resueltas por
-  mi cuenta:**
+- **Discrepancias encontradas durante la implementación — corregidas
+  (documentadas, no inventadas):**
   - Las filas 13, 16 y 18 de `docs/state_machine.md` no traen un nombre de
-    evento fijo (usan una descripción entre paréntesis). Se usaron los
-    identificadores de código `COTIZADOR_INICIA_TRABAJO` y `QUOTE_REJECTED`
-    (fila 18 reutiliza `QUOTE_APPROVED`) — no son nombres de evento
-    confirmados por ninguna fuente, ver el comentario en
+    evento fijo (usan una descripción entre paréntesis). El código usa los
+    identificadores `COTIZADOR_INICIA_TRABAJO` y `QUOTE_REJECTED` (fila 18
+    reutiliza `QUOTE_APPROVED`) — siguen siendo nombres de trabajo, no
+    confirmados por ninguna fuente. Ahora está anotado explícitamente en
+    `docs/state_machine.md` (regla general #6) y rastreado como pendiente
+    en `docs/open_questions.md` E.18, además del comentario ya existente en
     `services/workflow/state_machine.py`.
-  - `docs/test_strategy.md` cita "ejemplo 3 de `prompts/case_resolver_v1.txt`"
+  - `docs/test_strategy.md` citaba "ejemplo 3 de `prompts/case_resolver_v1.txt`"
     para el caso 19 (expediente ambiguo), pero ese archivo solo tiene un
-    ejemplo (el de bridas) — el ejemplo 3 ambiguo pertenece a
-    `prompts/classifier_v1.txt`. No lo corregí porque no se me pidió tocar
-    `test_strategy.md` en esta sesión; el test del caso 19 en
-    `tests/unit/test_case_resolver.py` usa un escenario sintético propio.
+    ejemplo (el de bridas), que además no es ambiguo. Se corrigió la cita:
+    ahora apunta a la sección "REGLA CRÍTICA — NO ADIVINAR" de ese mismo
+    prompt y aclara que el Ejemplo 3 ambiguo real vive en
+    `prompts/classifier_v1.txt` (ambigüedad de clasificación, no de
+    expediente). El test del caso 19 en `tests/unit/test_case_resolver.py`
+    sigue usando un escenario sintético propio, que no depende de esta cita.
 
 ### 6.3 Cómo correrlo
 

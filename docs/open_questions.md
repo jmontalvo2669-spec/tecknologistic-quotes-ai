@@ -89,6 +89,7 @@ se mantienen abiertos según la tabla A.
 | 15 | `AI_COST_BUDGET_PER_CASE_USD` (techo de gasto Claude API) | Alertas de sobrecosto; se define tras medir costo real, no bloquea mocks |
 | 16 | Exportar y anonimizar el set histórico de RFQ desde el buzón real | GATE 2 (pruebas de aceptación); la exportación en sí requiere acceso real a Gmail, sujeta a GATE 1 |
 | 17 | Tabla RACI — quién aprueba envío de cotización y OC a proveedor (sección B) | Flujo de aprobación humana (P1); no bloquea P0 con mocks |
+| 18 | Nombre real del evento que dispara las filas 13, 16 y 18 de `docs/state_machine.md` (acción manual del cotizador, rechazo de aprobación, nueva versión aprobada) — hoy son identificadores de código sin confirmar (`COTIZADOR_INICIA_TRABAJO`, `QUOTE_REJECTED`, reutilización de `QUOTE_APPROVED`), ver `docs/state_machine.md` regla general #6 | No bloquea P0 (esas filas son P1: cotización/aprobación); si se conecta una herramienta real de cotización, sus eventos deben mapear a estos nombres o renombrarlos |
 
 ---
 
