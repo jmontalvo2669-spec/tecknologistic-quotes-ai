@@ -83,7 +83,7 @@ Cada agente consume exactamente los campos listados en "Input" y produce exactam
   "case_id": "string",
   "line_count": "int",
   "cliente": "string",
-  "flags": {"cliente_reservado": "bool", "producto_especializado": "bool", "certificacion_requerida": "bool", "urgente_vip": "bool"},
+  "flags": {"cliente_reservado": "bool", "urgente_vip": "bool"},
   "roster": [{"cotizador_id": "string", "activo": "bool", "carga_actual_lineas": "int"}]
 }
 ```
@@ -103,6 +103,15 @@ Cada agente consume exactamente los campos listados en "Input" y produce exactam
 ```
 
 **Regla de contrato:** si ningún cotizador es elegible (todos excluidos por `flags` o roster vacío), `cotizador_id=null` y `requires_human_review=true` — nunca asignar por defecto al primero disponible ignorando exclusiones.
+
+**Decisión (ver `docs/decisions/0001-balancer-flags-especializacion.md`):**
+`producto_especializado` y `certificacion_requerida` se quitaron de `flags`
+tras confirmar con Jorge que los 6 cotizadores activos pueden cotizar
+cualquier producto — no hay especialidad ni certificación que diferencie a
+uno de otro en la práctica, así que excluir la asignación automática por
+esas condiciones no protegía ninguna decisión real. `cliente_reservado` y
+`urgente_vip` se mantienen: no son cuestión de capacidad técnica, sino de
+designación comercial previa y de priorización humana, respectivamente.
 
 ---
 

@@ -6,11 +6,24 @@ esquemas de payload provienen literalmente de `docs/agent_contracts.md` y
 
 ## Lista de eventos identificados en las fuentes disponibles
 
-`[PENDIENTE]` La sección 23 del prompt maestro afirma que la lista completa
-de eventos (`EMAIL_RECEIVED ... EXCEPTION_CREATED`) es "igual que v1.0", pero
-ese documento no está en el repo. La lista de abajo es la que se puede
-**derivar con evidencia** de `docs/agent_contracts.md` y
-`docs/state_machine.md` — puede no ser exhaustiva.
+La sección 22 de `docs/architecture.md` (v1.2, autocontenida) ya da una lista
+canónica de eventos: `EMAIL_RECEIVED`, `EMAIL_INGESTED`, `EMAIL_CLASSIFIED`,
+`DOCUMENT_EXTRACTED`, `CASE_CREATED`, `CASE_RESOLVED`, `RFQ_VALIDATED`,
+`RFQ_ASSIGNED`, `QUOTE_APPROVAL_REQUIRED`, `QUOTE_APPROVED`,
+`CUSTOMER_PO_RECEIVED`, `SUPPLIER_PO_APPROVAL_REQUIRED`,
+`SUPPLIER_PO_EMITTED`, `CASE_CLOSED`, `EXCEPTION_CREATED`.
+
+**Discrepancia sin resolver, no se decide aquí:** esa lista canónica incluye
+`CASE_CREATED` (que no aparece en `docs/agent_contracts.md` ni en
+`docs/state_machine.md` como evento disparador de ninguna fila) y **no**
+incluye `EXCEPTION_RESOLVED` (que sí es el evento disparador explícito de la
+fila 24 de `docs/state_machine.md`, la única salida válida del estado
+`EXCEPCIÓN`). La tabla de abajo mantiene `EXCEPTION_RESOLVED` porque
+`docs/state_machine.md` lo exige literalmente, y agrega `CASE_CREATED` al
+final marcado como pendiente de ubicar en el flujo — **Jorge debe confirmar**
+si `CASE_CREATED` reemplaza/precede a `EMAIL_INGESTED→RECIBIDA` (creación del
+expediente) o es un evento aparte, y si `EXCEPTION_RESOLVED` fue una omisión
+en `docs/architecture.md` §22 o un cambio intencional.
 
 | Evento | Productor | Consumidor(es) | Dispara transición (state_machine.md) |
 |---|---|---|---|
@@ -29,6 +42,7 @@ ese documento no está en el repo. La lista de abajo es la que se puede
 | `CASE_CLOSED` | Humano / Odoo Connector (lectura) | Orquestador, Auditoría/KPI | fila 23 |
 | `EXCEPTION_CREATED` | Cualquier agente (vía Orquestador) o SLA | Orquestador, Auditoría/KPI | fila 25 |
 | `EXCEPTION_RESOLVED` | Humano (supervisor) | Orquestador | fila 24 |
+| `CASE_CREATED` | `[PENDIENTE — no está en `docs/agent_contracts.md` ni `docs/state_machine.md`; ver discrepancia arriba]` | — | ninguna fila lo dispara explícitamente |
 
 ## Esquemas de payload
 
@@ -38,11 +52,10 @@ tiene esquema explícito en las fuentes (`EMAIL_INGESTED`, `EMAIL_CLASSIFIED`,
 Connector, SLA, Trazabilidad). Los eventos puramente de transición manual
 (`RFQ_VALIDATED`, `QUOTE_APPROVAL_REQUIRED`, `QUOTE_APPROVED`,
 `CUSTOMER_PO_RECEIVED`, `SUPPLIER_PO_APPROVAL_REQUIRED`,
-`SUPPLIER_PO_EMITTED`, `CASE_CLOSED`, `EXCEPTION_RESOLVED`) no tienen un
-esquema JSON de payload especificado en las fuentes — `[PENDIENTE]`, se
-definirán como Pydantic models mínimos (case_id + actor + timestamp + motivo)
-cuando se implemente, salvo que Jorge aporte el documento v1.0 con el detalle
-original.
+`SUPPLIER_PO_EMITTED`, `CASE_CLOSED`, `EXCEPTION_RESOLVED`, `CASE_CREATED`) no
+tienen un esquema JSON de payload especificado en las fuentes — `[PENDIENTE]`,
+se definirán como Pydantic models mínimos (case_id + actor + timestamp +
+motivo) cuando se implemente.
 
 ## Reglas de contrato transversales (de `docs/agent_contracts.md`)
 
@@ -56,5 +69,5 @@ original.
    `docs/state_machine.md` — un evento no mapeado para el estado actual
    genera `EXCEPTION_CREATED`, nunca se aplica "por si acaso".
 4. Idempotencia: `event_id`, `message_hash`, `gmail_message_id`,
-   `idempotency_key` deben consultarse antes de crear registros (sección 20
-   del prompt maestro).
+   `idempotency_key` deben consultarse antes de crear registros (sección 19
+   de `docs/architecture.md`).

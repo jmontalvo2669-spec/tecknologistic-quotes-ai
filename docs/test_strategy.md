@@ -81,7 +81,7 @@ Este documento convierte los 20 casos mínimos exigidos en la arquitectura (secc
 **Esperado:** el sistema no asume éxito silencioso; genera alerta específica de "escritura no verificada" para revisión manual — este es el caso más peligroso de duplicar compras/cotizaciones y debe tener su propio tipo de alerta, no genérico.
 
 ### 19. Expediente ambiguo
-**Entrada:** mensaje que podría pertenecer a dos expedientes distintos con evidencia textual comparable (ver ejemplo 3 de `prompts/case_resolver_v1.txt`).
+**Entrada:** mensaje que podría pertenecer a dos expedientes distintos con evidencia textual comparable (ver la sección "REGLA CRÍTICA — NO ADIVINAR" de `prompts/case_resolver_v1.txt`; ese archivo no trae un ejemplo JSON completo de este escenario — el único ejemplo que sí tiene se resuelve con confianza, sin ambigüedad. El Ejemplo 3 de `prompts/classifier_v1.txt` es un caso ambiguo distinto, de clasificación, no de resolución de expediente).
 **Esperado:** `resolution="EXCEPCION"`, ambos candidatos quedan registrados en `discarded_candidates` con su razón, ninguno se elige automáticamente.
 
 ### 20. Compra proveedor sin aprobación
