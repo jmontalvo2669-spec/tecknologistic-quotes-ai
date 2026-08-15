@@ -74,7 +74,7 @@ def write_record(
     return OdooWriteResult(
         case_id=case_id,
         odoo_model=odoo_model,
-        odoo_id=odoo_id if verified else odoo_id,
+        odoo_id=odoo_id,
         operation=operation,
         idempotency_key=idempotency_key,
         verified=verified,
