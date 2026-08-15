@@ -173,6 +173,22 @@ tests/fixtures/  # xlsx generados por scripts/generate_fixtures.py
   - El roster real de cotizadores contra Odoo 18 — `BalancerInput.roster`
     se recibe ya armado; falta el código que lo lea de Odoo RRHH cuando
     exista el sandbox (`docs/open_questions.md` A.2/A.3).
+  - **Pendiente explícito — camino de "correo de seguimiento con
+    candidatos ambiguos":** `run_p0_happy_path` (en
+    `services/workflow/orchestrator.py`) solo cubre una RFQ_NUEVA de un
+    thread nuevo, sin candidatos — nunca invoca de verdad
+    `services/case_resolver/service.py::resolve()`, asume directamente
+    que es un expediente recién creado (regla determinista). Falta
+    construir el camino del Orquestador para un mensaje entrante que
+    referencia un thread/tema existente con **dos o más expedientes
+    candidatos**: buscar candidatos (por remitente, tema, referencias),
+    invocar `resolve()` (que ahora, tras
+    `docs/decisions/0002-case-resolver-siempre-verifica-con-claude.md`,
+    siempre pasa por Claude aunque haya un único candidato), y aplicar las
+    filas 7/8 de `docs/state_machine.md` según el resultado
+    (`case_unique_confirmed` → `LISTA_PARA_ASIGNAR`, `case_ambiguous` →
+    `EXCEPCIÓN`). No se construye ahora — queda para cuando se implemente
+    ese flujo explícitamente.
 - **Discrepancias encontradas durante la implementación — corregidas
   (documentadas, no inventadas):**
   - Las filas 13, 16 y 18 de `docs/state_machine.md` no traen un nombre de
