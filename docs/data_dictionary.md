@@ -87,7 +87,7 @@ Input:
   "case_id": "string",
   "line_count": "int",
   "cliente": "string",
-  "flags": {"cliente_reservado": "bool", "producto_especializado": "bool", "certificacion_requerida": "bool", "urgente_vip": "bool"},
+  "flags": {"cliente_reservado": "bool", "urgente_vip": "bool"},
   "roster": [{"cotizador_id": "string", "activo": "bool", "carga_actual_lineas": "int"}]
 }
 ```
@@ -105,6 +105,11 @@ Output:
 }
 ```
 Fuente del `roster`: **`[PENDIENTE]`** — ver `docs/open_questions.md` A.2.
+
+`producto_especializado` y `certificacion_requerida` se quitaron de `flags`
+(ver `docs/decisions/0001-balancer-flags-especializacion.md`): Jorge
+confirmó que los 6 cotizadores pueden cotizar cualquier producto, sin
+diferenciación de especialidad ni certificación.
 
 ### 2.6 Orquestador
 No produce un esquema JSON fijo propio: aplica transiciones de

@@ -6,9 +6,13 @@ from pydantic import BaseModel
 
 
 class RosterFlags(BaseModel):
+    """`producto_especializado` y `certificacion_requerida` existieron aquí
+    hasta que Jorge confirmó que los 6 cotizadores pueden cotizar cualquier
+    producto — no hay especialidades ni certificaciones diferenciadas en la
+    práctica (docs/decisions/0001-balancer-flags-especializacion.md). Se
+    quitaron del contrato en vez de dejarlas como campos muertos."""
+
     cliente_reservado: bool = False
-    producto_especializado: bool = False
-    certificacion_requerida: bool = False
     urgente_vip: bool = False
 
 

@@ -243,7 +243,17 @@ En empate, utilizar una regla secundaria configurable: round-robin, o menor núm
 
 Registrar: cotizador; carga antes; líneas nuevas; carga después; regla utilizada; motivo; timestamp.
 
-**Exclusiones del balanceador** (no asignar automáticamente cuando): cotizador ausente; cliente reservado; producto especializado; certificación requerida; RFQ urgente/VIP; documento ilegible; conteo de líneas de baja confianza; expediente ya pertenece a otro cotizador. Estas reglas deben ser configuración, no hardcodearse.
+**Exclusiones del balanceador** (no asignar automáticamente cuando): cotizador ausente; cliente reservado; RFQ urgente/VIP; documento ilegible; conteo de líneas de baja confianza; expediente ya pertenece a otro cotizador. Estas reglas deben ser configuración, no hardcodearse.
+
+**Decisión (ver `docs/decisions/0001-balancer-flags-especializacion.md`):**
+"producto especializado" y "certificación requerida" ya no son exclusiones
+del balanceador. Jorge confirmó que los 6 cotizadores activos pueden
+cotizar cualquier producto — no hay especialidad ni certificación que
+diferencie a uno de otro en la práctica, así que estas dos condiciones no
+tienen ningún "cotizador correcto" que un humano deba elegir en su lugar.
+`cliente_reservado` y `urgente_vip` sí se mantienen como exclusiones,
+porque no dependen de capacidad técnica sino de designación comercial
+previa y de priorización humana explícita.
 
 **Pendiente de confirmar con Jorge (ver `docs/open_questions.md`):** dónde vive el roster de cotizadores activos/ausentes (¿Odoo RRHH, tabla propia, hoja de configuración?).
 

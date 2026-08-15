@@ -69,3 +69,11 @@ def test_flag_activa_excluye_asignacion_automatica_nunca_ignora_la_exclusion():
     assert result.cotizador_id is None
     assert result.requires_human_review is True
     assert "cliente_reservado" in result.motivo
+
+
+def test_flags_de_especializacion_fueron_removidas_decision_0001():
+    """docs/decisions/0001-balancer-flags-especializacion.md: Jorge confirmó
+    que los 6 cotizadores pueden cotizar cualquier producto, sin
+    especialidad ni certificación diferenciada entre ellos — estas dos
+    flags ya no existen en el contrato del Balanceador."""
+    assert set(RosterFlags.model_fields) == {"cliente_reservado", "urgente_vip"}

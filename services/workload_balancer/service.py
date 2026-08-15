@@ -3,15 +3,23 @@ docs/architecture.md). Least Loaded by Open Lines. Nunca divide una RFQ
 (siempre se asigna line_count completo a un único cotizador_id o a
 ninguno). Empate -> round-robin configurable.
 
-Exclusiones (sección 13): si cualquiera de las flags está activa
-(cliente_reservado, producto_especializado, certificacion_requerida,
-urgente_vip), el contrato de docs/agent_contracts.md §5 no incluye qué
-cotizador del roster cumple esa condición especial — el roster solo trae
+Exclusiones (sección 13): si cualquiera de las flags de RosterFlags está
+activa (cliente_reservado, urgente_vip), el contrato de
+docs/agent_contracts.md §5 no incluye qué cotizador del roster cumple esa
+condición especial — el roster solo trae
 `cotizador_id/activo/carga_actual_lineas` — así que no hay forma de
 filtrar por esa capacidad sin inventar un campo que no está en el
 contrato. Por eso cualquier flag activa excluye la asignación automática
 por completo (requires_human_review=True), en vez de intentar adivinar
 cuál cotizador la cumple.
+
+`producto_especializado` y `certificacion_requerida` existieron aquí hasta
+que Jorge confirmó que los 6 cotizadores pueden cotizar cualquier producto
+— no hay especialidad ni certificación que diferencie a uno de otro en la
+práctica. Sin esa diferenciación, excluir la asignación automática no
+protegía nada (no hay "cotizador correcto" que un humano deba elegir en su
+lugar) — ver docs/decisions/0001-balancer-flags-especializacion.md. Se
+quitaron del contrato en vez de dejarlas sin uso.
 """
 
 from __future__ import annotations
