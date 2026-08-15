@@ -18,8 +18,16 @@ from services.shared.repositories import InMemoryIngestedMessageRepository
 
 
 def _compute_message_hash(message: RawGmailMessage) -> str:
-    payload = f"{message.gmail_message_id}|{message.subject}|{message.body_text}"
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    hasher = hashlib.sha256()
+    hasher.update(
+        f"{message.gmail_message_id}|{message.subject}|{message.body_text}".encode("utf-8")
+    )
+    for attachment in message.attachments:
+        hasher.update(b"|")
+        hasher.update(attachment.filename.encode("utf-8"))
+        hasher.update(b":")
+        hasher.update(hashlib.sha256(attachment.content).digest())
+    return hasher.hexdigest()
 
 
 def _store_attachment(gmail_message_id: str, raw, blob_store: InMemoryBlobStore | None) -> Attachment:

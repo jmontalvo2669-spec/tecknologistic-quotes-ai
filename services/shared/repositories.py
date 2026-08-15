@@ -11,12 +11,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from schemas.audit import AuditEvent
+
 
 class InMemoryIngestedMessageRepository:
     """Idempotencia de Gmail Ingest — docs/agent_contracts.md §1."""
 
     def __init__(self) -> None:
-        self._hashes: dict[str, str | None] = {}
+        self._hashes: set[str] = set()
         # gmail_thread_id -> case_id, para poder ofrecer case_hint_id
         self._case_id_by_thread: dict[str, str] = {}
 
@@ -24,7 +26,7 @@ class InMemoryIngestedMessageRepository:
         return message_hash in self._hashes
 
     def save(self, *, message_hash: str, gmail_thread_id: str, case_id: str | None) -> None:
-        self._hashes[message_hash] = case_id
+        self._hashes.add(message_hash)
         if case_id is not None:
             self._case_id_by_thread[gmail_thread_id] = case_id
 
@@ -57,7 +59,7 @@ class ExpedienteRecord:
     cotizador_asignado: str | None = None
     carga_antes: int | None = None
     carga_despues: int | None = None
-    transitions: list[dict] = field(default_factory=list)
+    transitions: list[AuditEvent] = field(default_factory=list)
 
 
 class InMemoryExpedienteRepository:
@@ -97,13 +99,14 @@ class InMemoryExpedienteRepository:
         record = self._expedientes[case_id]
         record.estado_actual = estado_destino
         record.transitions.append(
-            {
-                "estado_origen": estado_origen,
-                "estado_destino": estado_destino,
-                "evento": evento,
-                "agente_actor": agente_actor,
-                "motivo": motivo,
-                "correlation_id": correlation_id,
-                "timestamp": timestamp,
-            }
+            AuditEvent(
+                case_id=case_id,
+                estado_origen=estado_origen,
+                estado_destino=estado_destino,
+                evento=evento,
+                agente_actor=agente_actor,
+                timestamp=timestamp,
+                motivo=motivo,
+                correlation_id=correlation_id,
+            )
         )
